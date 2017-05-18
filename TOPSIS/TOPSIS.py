@@ -1,7 +1,9 @@
 #      Author: Andre Pacheco (pacheco.comp@gmail.com)
 #      To use this class you need to pass as argument to the constructor a file that contains the decision matrix, weights and cost/benefit information.
+#      or just pass all these values as parameters
 #      For more information about TOPSIS:
 #      [1] C.L. Hwang & K.P. Yoon, Multiple Attributes Decision Making Methods and Applications, Springer-Verlag, Berlin, 1981.
+#
 #     If you use this code, please, cite:
 #     [2] Krohling, Renato A., Andre GC Pacheco, and Andre LT Siviero. IF-TODIM: An intuitionistic fuzzy TODIM to multi-criteria decision making. Knowledge-Based Systems 53 #	(2013): 142-146.
 #
@@ -39,8 +41,9 @@ class TOPSIS:
                   fileName = args[0]
                   try:
                         data = np.loadtxt(fileName, dtype=float)
-                  except ValueError:
+                  except IOError:
                         print 'ERROR: there is a problem with the file. Please, check the name.'
+			raise IOError
 
                   if nargs == 1:
                         self.weights = data[0,:]
@@ -139,11 +142,17 @@ def distance (a,b):
 
 
 # HOW TO USE
-#A = TOPSIS ('matrizDecisao.txt')
-#A.normalizeMatrix()
-#A.introWeights()
-#A.getIdealSolutions()
-#A.distanceToIdeal()
-#A.relativeCloseness()
-#Alternatives = np.array (['Palio', 'HB20', 'Corola'])
-#A.plotRankBar(Alternatives)
+A = TOPSIS ('mat_dec_votos.txt')
+A.normalizeMatrix()
+A.introWeights()
+A.getIdealSolutions()
+A.distanceToIdeal()
+A.relativeCloseness()
+Alternatives = np.array (['CRI','PEP','JAN','BOL','FRE','IDC','ALE','OSO','CYR','THE','CAR'])
+A.plotRankBar(Alternatives)
+
+
+
+
+
+
