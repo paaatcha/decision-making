@@ -1,15 +1,25 @@
-#      Author: Andre Pacheco (pacheco.comp@gmail.com)
-#      To use this class you need to pass as argument to the constructor a file that contains the decision matrix, weights and cost/benefit information.
-#      or just pass all these values as parameters
-#      For more information about TOPSIS:
-#      [1] C.L. Hwang & K.P. Yoon, Multiple Attributes Decision Making Methods and Applications, Springer-Verlag, Berlin, 1981.
-#
-#     If you use this code, please, cite:
-#     [2] Krohling, Renato A., Andre GC Pacheco, and Andre LT Siviero. IF-TODIM: An intuitionistic fuzzy TODIM to multi-criteria decision making. Knowledge-Based Systems 53 #	(2013): 142-146.
-#
-#      If you find some bug, please e-mail me =)
-#############################################################
+'''
+Author: Andre Pacheco
+Email: pacheco.comp@gmail.com
 
+This class implements the TOPSIS [1] algorithm.
+In order to use it, you need to inform the decision matrix, criteria's weights and cost/benefit.
+You can set these parameters in an external file .txt or just call the constructors passing 
+the variables as parameters.
+
+In the file task_topsis.py there is an example showing how to use this class.
+
+For more information about TOPSIS:
+
+      [1] C.L. Hwang & K.P. Yoon, Multiple Attributes Decision Making Methods and Applications, Springer-Verlag, Berlin, 1981.
+
+If you use this code, please, cite:
+
+     [2] Krohling, Renato A., Andre GC Pacheco, and Andre LT Siviero. IF-TODIM: An intuitionistic fuzzy TODIM to multi-criteria decision making. Knowledge-Based Systems 53 #	(2013): 142-146.
+
+If you find some bug, please e-mail me =)
+
+'''
 
 import numpy as np
 from matplotlib import pyplot as plt
@@ -34,7 +44,7 @@ class TOPSIS:
             nargs = len(args)
 
             if nargs == 0:
-                  print 'ERROR: There is no parameter'
+                  print ('ERROR: There is no parameter')
                   raise ValueError
             elif nargs == 1 or nargs == 2:
                   # In this case we set all the parameters as a file or set only the matrixD and pass the weights and costBen via code
@@ -42,40 +52,41 @@ class TOPSIS:
                   try:
                         data = np.loadtxt(fileName, dtype=float)
                   except IOError:
-                        print 'ERROR: there is a problem with the file. Please, check the name.'
-			raise IOError
+                        print ('ERROR: there is a problem with the file. Please, check the name.')
+                        raise IOError
 
                   if nargs == 1:
-                        self.weights = data[0,:]
+                        self.weights = np.asarray(data[0,:])
                         if self.weights.sum() != 1.0:
-                              print 'ERROR: the sum of the weights must be 1'
+                              print ('ERROR: the sum of the weights must be 1')
                               raise ValueError
 
                         self.costBen = data[1,:].astype(int)
-                        self.matrixD = data[2:,:]
+                        self.matrixD = np.asarray(data[2:,:])
                   else:
-                        self.matrixD = data
-                        self.weights = args[0]
+                        self.matrixD = np.asarray(data)
+                        self.weights = np.asarray(args[0])
+                        
                         if self.weights.sum() != 1.0:
-                              print 'ERROR: the sum of the weights must be 1'
+                              print ('ERROR: the sum of the weights must be 1')
                               raise ValueError
-                        self.costBen = arg[1]
+                        self.costBen = args[1]
 
             elif nargs == 3:
                   # In this case, the parameters' order are: matrixD, weights and costBen
-                  self.matrixD = args[0]
-                  self.weights = args[1]
+                  self.matrixD = np.asarray(args[0])
+                  self.weights = np.asarray(args[1])
                   if self.weights.sum() != 1.0:
-                              print 'ERROR: the sum of the weights must be 1'
+                              print ('ERROR: the sum of the weights must be 1')
                               raise ValueError
                   self.costBen = args[2]
 
             else:
-                  print 'ERROR: The number of the parameters is wrong'
+                  print ('ERROR: The number of the parameters is wrong')
                   raise ValueError
 
 
-            size = self.matrixD.shape
+            size = self.matrixD.shape            
             [self.nAlt, self.nCri] = size
             self.normMatrixD = np.zeros(size, dtype=float)
             self.idealPos = np.zeros (self.nCri, dtype=float)
@@ -110,7 +121,7 @@ class TOPSIS:
                         self.idealPos[j] = mx[j]
                         self.idealNeg[j] = mi[j]
                   else:
-                        print 'ERROR: The values of the cost and benefit must be 1 or 0'
+                        print ('ERROR: The values of the cost and benefit must be 1 or 0')
                         raise ValueError
 
       def distanceToIdeal (self):
@@ -127,12 +138,17 @@ class TOPSIS:
                   self.rCloseness[i] = self.dNeg[i] / (self.dPos[i] + self.dNeg[i])
 
 
-      # You need to pass as argument the name of the alternatives
-      def plotRankBar (self, names):
+      # You need to pass as argument the name of the alternatives. If you wanna save the figure
+      # Just pass the file name in saveName var.
+      def plotRankBar (self, names, saveName=None):
             sns.set_style("whitegrid")
-            a = sns.barplot (names, self.rCloseness)
-            a.set_ylabel("Ranking")
+            a = sns.barplot (names, self.rCloseness, palette="Blues_d")
+            a.set_ylabel("Closeness Coefficient")
             plt.show()
+            
+            if saveName is not None:
+                fig = a.get_figure()
+                fig.savefig(saveName+'.png', format='png')
 
 
 ############################## END CLASS ###########################################
@@ -141,15 +157,7 @@ def distance (a,b):
       return (a-b)**2
 
 
-# HOW TO USE
-A = TOPSIS ('mat_dec_votos.txt')
-A.normalizeMatrix()
-A.introWeights()
-A.getIdealSolutions()
-A.distanceToIdeal()
-A.relativeCloseness()
-Alternatives = np.array (['CRI','PEP','JAN','BOL','FRE','IDC','ALE','OSO','CYR','THE','CAR'])
-A.plotRankBar(Alternatives)
+
 
 
 
