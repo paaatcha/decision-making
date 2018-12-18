@@ -18,6 +18,9 @@ If you find some bug, please e-mail me =)
 
 '''
 
+from __future__ import print_function
+from __future__ import division
+
 # Setting the path to the TOPSIS class
 import sys
 sys.path.insert(0, '../TOPSIS')
@@ -84,7 +87,7 @@ Tf.distanceToIdeal()
 Tf.relativeCloseness()
 
 
-print Tf.rCloseness
+print (Tf.rCloseness)
 
 Alternatives = np.array (['Alg1','Alg2','Alg3','Alg4'])
 Tf.plotRankBar(Alternatives)

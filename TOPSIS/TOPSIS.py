@@ -21,6 +21,10 @@ If you find some bug, please e-mail me =)
 
 '''
 
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
+
 import numpy as np
 from matplotlib import pyplot as plt
 import seaborn as sns

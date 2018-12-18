@@ -29,6 +29,9 @@ If you find any bug, please e-mail me =)
 
 '''
 
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
 
 import numpy as np
 import seaborn as sns
@@ -62,7 +65,7 @@ class TODIM:
     def __init__ (self, *args):
         nargs = len(args)        
         if nargs == 0:
-            print 'ERROR: There is no parameter in the construction function'
+            print ('ERROR: There is no parameter in the construction function')
             raise ValueError
         elif nargs == 1 or nargs == 2:
             # The .txt file need to be the 1st parameter
@@ -70,7 +73,7 @@ class TODIM:
             try:
                 data = np.loadtxt(fileName, dtype=float)
             except IOError:
-                print 'ERROR: there is a problem with the .txt file. Please, check it again'
+                print ('ERROR: there is a problem with the .txt file. Please, check it again')
                 raise IOError
 
             # All the values are in the .txt
@@ -92,7 +95,7 @@ class TODIM:
         #Just checking if the weights' sum is equals 1
         if self.weights.sum() > 1.001 or self.weights.sum() < 0.9999:
             self.weights = self.weights/self.weights.sum()            
-            print  'The weights was normalized in the interval [0,1]'            
+            print  ('The weights was normalized in the interval [0,1]')
             
                         
         # Filling the remaining variables
@@ -105,9 +108,9 @@ class TODIM:
         self.wref = self.weights.max()
 
     def printTODIM (self):      
-        print 'MatrixD \n', self.matrixD
-        print 'Weights \n', self.weights
-        print 'Theta \n', self.theta
+        print ('MatrixD \n', self.matrixD)
+        print ('Weights \n', self.weights)
+        print ('Theta \n', self.theta)
 
     # Normalizeing the matrixD
     def normalizeMatrix (self):
@@ -154,7 +157,7 @@ class TODIM:
         for i in range(self.nAlt):
             self.rCloseness[i] = (aux[i] - aux.min()) / (aux.max() - aux.min())
         if verbose:
-            print self.rCloseness
+            print (self.rCloseness)
             
     # To plot the Alternatives' name, just pass a list of names
     # To save the plot, just pass the files name on saveName

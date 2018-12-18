@@ -7,6 +7,10 @@ An example of how to use the TOPSIS class.
 
 """
 
+from __future__ import print_function
+from __future__ import division
+from __future__ import absolute_import
+
 from TOPSIS import TOPSIS
 import numpy as np
 
@@ -20,7 +24,7 @@ A.relativeCloseness()
 # Showing the results
 print (A.rCloseness)
 Alternatives = np.array (['A1','A2','A3'])
-A.plotRankBar(Alternatives, 'Fig1')
+A.plotRankBar(Alternatives)
 
 
 # If you don't wanna use the file .txt, you can set the values 
