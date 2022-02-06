@@ -3,7 +3,7 @@
 Author: Andre Pacheco
 Email: pacheco.comp@gmail.com
 
-An example of how to use the TODIM class.
+An example of how to use the todim class.
 
 """
 from __future__ import print_function

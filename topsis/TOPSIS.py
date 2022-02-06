@@ -2,20 +2,20 @@
 Author: Andre Pacheco
 Email: pacheco.comp@gmail.com
 
-This class implements the TOPSIS [1] algorithm.
+This class implements the topsis [1] algorithm.
 In order to use it, you need to inform the decision matrix, criteria's weights and cost/benefit.
 You can set these parameters in an external file .txt or just call the constructors passing 
 the variables as parameters.
 
 In the file task_topsis.py there is an example showing how to use this class.
 
-For more information about TOPSIS:
+For more information about topsis:
 
       [1] C.L. Hwang & K.P. Yoon, Multiple Attributes Decision Making Methods and Applications, Springer-Verlag, Berlin, 1981.
 
 If you use this code, please, cite:
 
-     [2] Krohling, Renato A., Andre GC Pacheco, and Andre LT Siviero. IF-TODIM: An intuitionistic fuzzy TODIM to multi-criteria decision making. Knowledge-Based Systems 53 #	(2013): 142-146.
+     [2] Krohling, Renato A., Andre GC Pacheco, and Andre LT Siviero. IF-todim: An intuitionistic fuzzy todim to multi-criteria decision making. Knowledge-Based Systems 53 #	(2013): 142-146.
 
 If you find some bug, please e-mail me =)
 

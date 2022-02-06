@@ -3,7 +3,7 @@
 Author: Andre Pacheco
 Email: pacheco.comp@gmail.com
 
-An example of how to use the TOPSIS class.
+An example of how to use the topsis class.
 
 """
 

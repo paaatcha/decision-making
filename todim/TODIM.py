@@ -5,7 +5,7 @@
 Author: Andre Pacheco
 Email: pacheco.comp@gmail.com
 
-This class implements the TODIM [1,2] algorithm.
+This class implements the todim [1,2] algorithm.
 In order to use it, you need to inform the decision matrix, criteria's weights and thetas's value.
 You can set these parameters in an external file .txt or just call the constructors passing 
 the variables as parameters.
@@ -14,14 +14,14 @@ Moreover, this code uses the algoruthm's chage proposed [3] when we compute the 
 
 In the file task_todim.py there is an example showing how to use this class.
 
-For more information about TODIM:
-    [1] L.F.A.M. Gomes, M.M.P.P. Lima TODIM: Basics and application to multicriteria ranking of projects with environmental impacts
+For more information about todim:
+    [1] L.F.A.M. Gomes, M.M.P.P. Lima todim: Basics and application to multicriteria ranking of projects with environmental impacts
         Foundations of Computing and Decision Sciences, 16 (4) (1992), pp. 113-127
     
-    [2] Krohling, Renato A., Andre GC Pacheco, and Andre LT Siviero. IF-TODIM: An intuitionistic fuzzy TODIM to multi-criteria decision
+    [2] Krohling, Renato A., Andre GC Pacheco, and Andre LT Siviero. IF-todim: An intuitionistic fuzzy todim to multi-criteria decision
         making. Knowledge-Based Systems 53, (2013), pp. 142-146.
 
-    [3] Lourenzutti, R. and Khroling, R. A study of TODIM in a intuitionistic fuzzy and random environment,
+    [3] Lourenzutti, R. and Khroling, R. A study of todim in a intuitionistic fuzzy and random environment,
         Expert Systems with Applications, Expert Systems with Applications 40, (2013), pp. 6459-6468
 
 

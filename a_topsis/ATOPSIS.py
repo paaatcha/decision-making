@@ -2,17 +2,17 @@
 Author: Andre Pacheco
 Email: pacheco.comp@gmail.com
 
-This script implements the A-TOPSIS [1,2]. In order to use it, first you need to set the
-path to the TOPSIS.py (also included in this repository). Next, you need to define the
+This script implements the a_topsis [1,2]. In order to use it, first you need to set the
+path to the topsis.py (also included in this repository). Next, you need to define the
 the means and std matrices, as I did below. You also can get these matrices from a file.
 
-For more information about A-TOPSIS:
+For more information about a_topsis:
 
-[1] Krohling, R. A., and Pacheco, A.G.C. A-TOPSIS - an approach based on TOPSIS for ranking 
+[1] Krohling, R. A., and Pacheco, A.G.C. a_topsis - an approach based on topsis for ranking
     evolutionary algorithms. Procedia Computer Science 55 (2015): 308-317.
 
 [2] Pacheco, A.G.C. and Krohling, R.A. "Ranking of Classification Algorithms in Terms of 
-    Mean-Standard Deviation Using A-TOPSIS". Annals of Data Science (2016), pp.1-18.
+    Mean-Standard Deviation Using a_topsis". Annals of Data Science (2016), pp.1-18.
 
 If you find some bug, please e-mail me =)
 
@@ -21,11 +21,11 @@ If you find some bug, please e-mail me =)
 from __future__ import print_function
 from __future__ import division
 
-# Setting the path to the TOPSIS class
+# Setting the path to the topsis class
 import sys
-sys.path.insert(0, '../TOPSIS')
+sys.path.insert(0, '../topsis')
 
-from TOPSIS import TOPSIS
+from topsis import TOPSIS
 import numpy as np
 
 # The matrix of means
@@ -57,23 +57,23 @@ stdVals = np.array( [[0.00186, 0.00417, 0.00001, 0.00004],
 w = np.ones([1,11]) / 11
 cb = np.ones([11])
 
-#applying TOPSIS to means
-#Tm = TOPSIS ('valsMeans.txt') # You can also load it from a file
+#applying topsis to means
+#Tm = topsis ('valsMeans.txt') # You can also load it from a file
 Tm = TOPSIS (vals, w, cb)
 Tm.introWeights()
 Tm.getIdealSolutions()
 Tm.distanceToIdeal()
 Tm.relativeCloseness()
 
-#applying TOPSIS to std
-#Ts = TOPSIS ('valsStd.txt') # You can also load it from a file
+#applying topsis to std
+#Ts = topsis ('valsStd.txt') # You can also load it from a file
 Ts = TOPSIS (stdVals, w, cb)
 Ts.introWeights()
 Ts.getIdealSolutions()
 Ts.distanceToIdeal()
 Ts.relativeCloseness()
 
-#applyting TOPSIS for the rcloseness
+#applyting topsis for the rcloseness
 rcs = np.array ([Tm.rCloseness, Ts.rCloseness])
 rcs = rcs.T
 
