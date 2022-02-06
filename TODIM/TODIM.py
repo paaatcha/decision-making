@@ -29,83 +29,87 @@ If you find any bug, please e-mail me =)
 
 '''
 
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
-
 import numpy as np
 import seaborn as sns
 from matplotlib import pyplot as plt
+import pandas as pd
 
 
 class TODIM:
-    '''
-    Attributes:
-    matrixD - The decision matrix with the alternatives and criteria
-    weights - The weights for each criteria
-    theta - The theta's value
-    nAlt - The number of alternatives
-    nCri - The number of criteria
-    normMatrixD - The matrixD normalized
-    rCloseness - The relative closeness coeficient    
-    '''
-    matrixD = None
-    weights = None
-    wref = None
-    theta = None
-    nAlt = None
-    nCri = None
-    normMatrixD = None
-    phi = None
-    delta = None
-    rCloseness = None
-    
-    
 
-    def __init__ (self, *args):
-        nargs = len(args)        
-        if nargs == 0:
-            print ('ERROR: There is no parameter in the construction function')
-            raise ValueError
-        elif nargs == 1 or nargs == 2:
-            # The .txt file need to be the 1st parameter
-            fileName = args[0]
-            try:
-                data = np.loadtxt(fileName, dtype=float)
-            except IOError:
-                print ('ERROR: there is a problem with the .txt file. Please, check it again')
-                raise IOError
+    def __init__ (self, matrix_d, weights=None, theta=2.5, alt_col_name=None, crit_col_names=None):
+        '''
+            Attributes:
+            matrixD - The decision matrix with the alternatives and criteria. Shape = [# of alternatives x # of criteria]
+            weights - The weights for each criteria
+            theta - The theta's value
+            nAlt - The number of alternatives
+            nCri - The number of criteria
+            normMatrixD - The matrixD normalized
+            rCloseness - The relative closeness coeficient
+        Args:
+            matrix_d:
+            weights:
+            theta:
+            alt_col_name:
+            crit_col_names:
+        '''
 
-            # All the values are in the .txt
-            if nargs == 1:
-                self.weights = data[0,:]
-                self.theta = data[1,0]
-                self.matrixD = data[2:,:]                
-            # Only the matrixD is passed in the .txt
+
+        # If the matrix_d is a string, we load it from a csv file
+        if isinstance(matrix_d, str):
+            matrix_d = pd.read_csv(matrix_d)
+
+        self.criteria, self.alternatives = None, None
+
+        # If the matrix_d is not a string, it may be a DataFrame, a list of lists or a Numpy array
+        if isinstance(matrix_d, pd.DataFrame):
+            # If it's a DataFrame, we need to check if alt_col_name and crit_col_names are filled
+            if alt_col_name is not None:
+                self.alternatives = matrix_d[alt_col_name].values
+            if crit_col_names is not None:
+                self.matrix_d = matrix_d[crit_col_names].values
+                self.criteria = crit_col_names
             else:
-                self.matrixD = data
-                self.weights = np.asarray(args[0])
-                self.theta = args[1]
-        # In this case, all the parameters are passed without use a .txt, in the following order: matrixD, weights, theta
-        elif nargs == 3:
-            self.matrixD = np.asarray(args[0])
-            self.weights = np.asarray(args[1])
-            self.theta = args[2]
-               
-        #Just checking if the weights' sum is equals 1
-        if self.weights.sum() > 1.001 or self.weights.sum() < 0.9999:
-            self.weights = self.weights/self.weights.sum()            
-            print  ('The weights was normalized in the interval [0,1]')
-            
-                        
-        # Filling the remaining variables
-        size = self.matrixD.shape
-        [self.nAlt, self.nCri] = size
-        self.normMatrixD = np.zeros(size, dtype=float)           
-        self.delta = np.zeros([self.nAlt, self.nCri])
-        self.rCloseness = np.zeros ([self.nAlt,1], dtype=float)
-        # weight reference
-        self.wref = self.weights.max()
+                self.matrix_d = matrix_d.values
+        elif isinstance(matrix_d, list):
+            # If it's a list, we just transform it into a Numpy array
+            self.matrix_d = np.asarray(matrix_d)
+        elif isinstance(matrix_d, np.ndarray):
+            # If it's a numpy array, we just get it
+            self.matrix_d = matrix_d
+        else:
+            raise ValueError("The matrix_d parameter must be either a string, a DataFrame, a list of lists of a "
+                             f"Numpy array. The type {type(matrix_d)} is not available at this moment.")
+
+        # Getting the number of alternative and criteria
+        self.n_alt, self.n_crit = self.matrix_d.shape
+
+        if weights is None:
+            self.weights = np.array([1] * self.n_crit) / self.n_crit
+        else:
+            if not isinstance(weights, list) or not isinstance(weights, np.ndarray):
+                raise ValueError(f"The weights must be either a list or a Numpy array. The type {type(weights)} is "
+                                 "not available at this moment.")
+            self.weights = weights
+            if self.weights.sum() > 1.001 or self.weights.sum() < 0.9999:
+                self.weights = self.weights/self.weights.sum()
+                print ("INFO: the weights were normalized within the interval [0,1]")
+
+        self.w_ref = self.weights.max()
+        self.theta = theta
+        self.norm_matrix = np.zeros_like(self.matrix_d, dtype=float)
+        self.delta = np.zeros_like(self.matrix_d, dtype=float)
+        self.r_closeness = np.zeros([self.n_alt, 1], dtype=float)
+
+        # # Filling the remaining variables
+        # size = self.matrixD.shape
+        # [self.nAlt, self.nCri] = size
+        # self.normMatrixD = np.zeros(size, dtype=float)
+        # self.delta = np.zeros([self.nAlt, self.nCri])
+        # self.rCloseness = np.zeros ([self.nAlt,1], dtype=float)
+        # # weight reference
+        # self.wref = self.weights.max()
 
     def printTODIM (self):      
         print ('MatrixD \n', self.matrixD)
