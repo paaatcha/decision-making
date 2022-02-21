@@ -25,7 +25,7 @@ from __future__ import division
 import sys
 sys.path.insert(0, '../topsis')
 
-from topsis import TOPSIS
+from methods import topsis
 import numpy as np
 
 # The matrix of means
@@ -59,7 +59,7 @@ cb = np.ones([11])
 
 #applying topsis to means
 #Tm = topsis ('valsMeans.txt') # You can also load it from a file
-Tm = TOPSIS (vals, w, cb)
+Tm = TOPSIS(vals, w, cb)
 Tm.introWeights()
 Tm.getIdealSolutions()
 Tm.distanceToIdeal()
@@ -67,7 +67,7 @@ Tm.relativeCloseness()
 
 #applying topsis to std
 #Ts = topsis ('valsStd.txt') # You can also load it from a file
-Ts = TOPSIS (stdVals, w, cb)
+Ts = TOPSIS(stdVals, w, cb)
 Ts.introWeights()
 Ts.getIdealSolutions()
 Ts.distanceToIdeal()
@@ -80,7 +80,7 @@ rcs = rcs.T
 weightsFinal = np.array ([0.6, 0.4]) # (mean weight, std weigth)
 costBenFinal = np.array([0, 0]) #Benefit criteria
 
-Tf = TOPSIS (rcs, weightsFinal, costBenFinal)
+Tf = TOPSIS(rcs, weightsFinal, costBenFinal)
 Tf.introWeights()
 Tf.getIdealSolutions()
 Tf.distanceToIdeal()

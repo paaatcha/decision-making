@@ -12,7 +12,7 @@ the variables as parameters.
 
 Moreover, this code uses the algoruthm's chage proposed [3] when we compute the phi matrix.
 
-In the file task_todim.py there is an example showing how to use this class.
+In the file task_todim.py there is an examples showing how to use this class.
 
 For more information about todim:
     [1] L.F.A.M. Gomes, M.M.P.P. Lima todim: Basics and application to multicriteria ranking of projects with environmental impacts
@@ -55,29 +55,25 @@ class TODIM:
             crit_col_names:
         '''
 
-
         # If the matrix_d is a string, we load it from a csv file
         if isinstance(matrix_d, str):
             matrix_d = pd.read_csv(matrix_d)
 
         self.criteria, self.alternatives = None, None
 
-        # If the matrix_d is not a string, it may be a DataFrame, a list of lists or a Numpy array
+        # If the matrix_d is not a string, it must be either a DataFrame, a list of lists or a Numpy array
         if isinstance(matrix_d, pd.DataFrame):
             # If it's a DataFrame, we need to check if alt_col_name and crit_col_names are filled
-            if alt_col_name is not None:
-                self.alternatives = matrix_d[alt_col_name].values
-            if crit_col_names is not None:
-                self.matrix_d = matrix_d[crit_col_names].values
-                self.criteria = crit_col_names
-            else:
-                self.matrix_d = matrix_d.values
-        elif isinstance(matrix_d, list):
-            # If it's a list, we just transform it into a Numpy array
+            if alt_col_name is None or crit_col_names is None:
+                raise ValueError("You are using a DataFrame as input. Thus, you need to set the alt_col_name and "
+                                 "crit_col_names attributes")
+            self.alternatives = matrix_d[alt_col_name].values
+            self.matrix_d = matrix_d[crit_col_names].values
+            self.criteria = crit_col_names
+
+        elif isinstance(matrix_d, list) or isinstance(matrix_d, np.ndarray):
+            # If it's a list or numpy array we just use it
             self.matrix_d = np.asarray(matrix_d)
-        elif isinstance(matrix_d, np.ndarray):
-            # If it's a numpy array, we just get it
-            self.matrix_d = matrix_d
         else:
             raise ValueError("The matrix_d parameter must be either a string, a DataFrame, a list of lists of a "
                              f"Numpy array. The type {type(matrix_d)} is not available at this moment.")
@@ -88,66 +84,80 @@ class TODIM:
         if weights is None:
             self.weights = np.array([1] * self.n_crit) / self.n_crit
         else:
-            if not isinstance(weights, list) or not isinstance(weights, np.ndarray):
+            if not isinstance(weights, list) and not isinstance(weights, np.ndarray):
                 raise ValueError(f"The weights must be either a list or a Numpy array. The type {type(weights)} is "
                                  "not available at this moment.")
-            self.weights = weights
-            if self.weights.sum() > 1.001 or self.weights.sum() < 0.9999:
+            elif len(weights) != self.n_crit:
+                raise ValueError("The number of weights must be the same as the number of criteria")
+
+            self.weights = np.asarray(weights)
+            if not np.isclose(self.weights.sum(), 1.0):
                 self.weights = self.weights/self.weights.sum()
                 print ("INFO: the weights were normalized within the interval [0,1]")
 
-        self.w_ref = self.weights.max()
         self.theta = theta
-        self.norm_matrix = np.zeros_like(self.matrix_d, dtype=float)
         self.delta = np.zeros_like(self.matrix_d, dtype=float)
-        self.r_closeness = np.zeros([self.n_alt, 1], dtype=float)
+        self.closs_coefficient = np.zeros([self.n_alt, 1], dtype=float)
 
-        # # Filling the remaining variables
-        # size = self.matrixD.shape
-        # [self.nAlt, self.nCri] = size
-        # self.normMatrixD = np.zeros(size, dtype=float)
-        # self.delta = np.zeros([self.nAlt, self.nCri])
-        # self.rCloseness = np.zeros ([self.nAlt,1], dtype=float)
-        # # weight reference
-        # self.wref = self.weights.max()
 
-    def printTODIM (self):      
-        print ('MatrixD \n', self.matrixD)
-        print ('Weights \n', self.weights)
-        print ('Theta \n', self.theta)
+    def print(self):
+        print("-" * 50)
+        print("- Decision matrix:")
+        print("-" * 50)
+        print(self.matrix_d)
 
-    # Normalizeing the matrixD
-    def normalizeMatrix (self):
-        m = self.matrixD.sum(axis=0)
-        for i in range(self.nAlt):
-            for j in range(self.nCri):
-                self.normMatrixD[i,j] = self.matrixD[i,j] / m[j]
-    
-        self.matrixD = self.normMatrixD
+        print("-" * 50)
+        print("- Weights:")
+        print("-" * 50)
+        print(self.weights)
 
-    # You can change the function, if you wanna do that.
-    def distance (self, alt_i, alt_j, crit):
-        return (self.matrixD[alt_i, crit] - self.matrixD[alt_j, crit])
+        print("-" * 50)
+        print(f"- Theta: {self.theta}")
+        print("-" * 50)
+
+    def normalizing_matrix_d(self):
+        """
+        This method just normalizes the criteria of matrix_d within the interval [0,1]
+        Returns:
+
+        """
+        crit_sum = self.matrix_d.sum(axis=0)
+        for i in range(self.n_alt):
+            for j in range(self.n_crit):
+                self.matrix_d[i,j] = self.matrix_d[i,j] / crit_sum[j]
+
+    def get_distance(self, alt_i, alt_j, crit):
+        """
+        This method computes the distance between two criteria. You may change it if you
+        want a different distance function
+        Args:
+            alt_i:
+            alt_j:
+            crit:
+
+        Returns:
+
+        """
+        return self.matrix_d[alt_i, crit] - self.matrix_d[alt_j, crit]
     
     # I use this function because it's easy to incluse another type of comparison
-    def getComparison (self, alt_i, alt_j, crit):        
-        return self.distance(alt_i, alt_j, crit)
+    def get_comparison (self, alt_i, alt_j, crit):
+        return self.get_distance(alt_i, alt_j, crit)
 
-    def getDelta (self):
-        for i in range(self.nAlt):
-            for j in range(self.nCri):
-                self.delta[i,j] = self.getSumPhi(i,j)
+    def get_delta (self):
+        for i in range(self.n_alt):
+            for j in range(self.n_crit):
+                self.delta[i, j] = self.get_sum_phi(i,j)
                 
-    def getSumPhi (self,i,j):
-        #m = np.zeros(self.nCri)
-        m = 0
-        for c in range(self.nCri):
-            m = m + self.getPhi(i,j,c)
-        return m
+    def get_sum_phi (self, i, j):
+        accum = 0
+        for c in range(self.n_crit):
+            accum = accum + self.get_phi_matriz(i,j,c)
+        return accum
     
-    def getPhi (self, i, j, c):
-        dij = self.distance(i,j,c)
-        comp = self.getComparison (i,j,c)
+    def get_phi_matriz (self, i, j, c):
+        dij = self.get_distance(i, j, c)
+        comp = self.get_comparison(i, j, c)
         if comp == 0:
             return 0
         elif comp > 0:
@@ -155,31 +165,36 @@ class TODIM:
         else:
             return np.sqrt(self.weights[c]*abs(dij))/(-self.theta)
 
-    def getRCloseness (self, verbose=False):
-        self.getDelta()
+    def get_closeness_coefficient (self, verbose=False):
+        self.get_delta()
         aux = self.delta.sum(axis=1)
-        for i in range(self.nAlt):
-            self.rCloseness[i] = (aux[i] - aux.min()) / (aux.max() - aux.min())
+        for i in range(self.n_alt):
+            self.closs_coefficient[i] = (aux[i] - aux.min()) / (aux.max() - aux.min())
         if verbose:
-            print (self.rCloseness)
-            
-    # To plot the Alternatives' name, just pass a list of names
-    # To save the plot, just pass the files name on saveName
-    def plotBars (self,names=None, saveName=None):        
+            print (self.closs_coefficient)
+
+    def plot_bars (self, alt_names=None, save_path=None):
+        """
+            # To plot the Alternatives' name, just pass a list of names
+            # To save the plot, just pass the files name on saveName
+        Args:
+            alt_names:
+            save_path:
+
+        Returns:
+
+        """
         sns.set_style("whitegrid")
-        if names is not None:
-            a = sns.barplot (names, self.rCloseness[:,0], palette="BuGn_d")
+        if self.alternatives is not None:
+            alt_names = self.alternatives
+        if alt_names is not None:
+            a = sns.barplot (alt_names, self.closs_coefficient[:, 0], palette="BuGn_d")
         else:
-            a = sns.barplot (None, self.rCloseness[:,0], palette="BuGn_d")
-        
-        a.set_ylabel("Closeness Coeficient")
+            a = sns.barplot (None, self.closs_coefficient[:, 0], palette="BuGn_d")
+        a.set_ylabel("Closeness Coefficient")
         a.set_xlabel('Alternatives')
         fig = a.get_figure()
         plt.show()
         
-        
-        if saveName is not None:
-            fig.savefig(saveName+'.png')
-
-################################## END CLASS ####################################################
-
+        if save_path is not None:
+            fig.savefig(save_path)

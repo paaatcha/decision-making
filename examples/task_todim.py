@@ -3,15 +3,14 @@
 Author: Andre Pacheco
 Email: pacheco.comp@gmail.com
 
-An example of how to use the todim class.
+An examples of how to use the todim class.
 
 """
 from __future__ import print_function
 from __future__ import division
 from __future__ import absolute_import
 
-from TODIM import TODIM
-import numpy as np
+from methods.todim import TODIM
 
 A = TODIM ('decisionMatrix.txt')
 A.getRCloseness(verbose=True)

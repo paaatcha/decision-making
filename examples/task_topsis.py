@@ -3,7 +3,7 @@
 Author: Andre Pacheco
 Email: pacheco.comp@gmail.com
 
-An example of how to use the topsis class.
+An examples of how to use the topsis class.
 
 """
 
@@ -11,7 +11,7 @@ from __future__ import print_function
 from __future__ import division
 from __future__ import absolute_import
 
-from TOPSIS import TOPSIS
+from methods.topsis import TOPSIS
 import numpy as np
 
 A = TOPSIS ('decisionMatrix.txt')
