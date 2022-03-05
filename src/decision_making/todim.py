@@ -80,7 +80,7 @@ class TODIM:
 
         self.theta = theta
         self.delta = np.zeros_like(self.matrix_d, dtype=float)
-        self.closs_coefficient = np.zeros([self.n_alt, 1], dtype=float)
+        self.clos_coefficient = np.zeros([self.n_alt, 1], dtype=float)
 
 
     def print(self):
@@ -229,9 +229,9 @@ class TODIM:
         self.get_delta()
         aux = self.delta.sum(axis=1)
         for i in range(self.n_alt):
-            self.closs_coefficient[i] = (aux[i] - aux.min()) / (aux.max() - aux.min())
+            self.clos_coefficient[i] = (aux[i] - aux.min()) / (aux.max() - aux.min())
         if verbose:
-            print (self.closs_coefficient)
+            print (self.clos_coefficient)
 
     def plot_ranking (self, alt_names=None, save_path=None, show=True):
         """
@@ -257,9 +257,9 @@ class TODIM:
         if self.alternatives is not None:
             alt_names = self.alternatives
         if alt_names is not None:
-            a = sns.barplot (alt_names, self.closs_coefficient[:, 0], palette="BuGn_d")
+            a = sns.barplot (alt_names, self.clos_coefficient[:, 0], palette="BuGn_d")
         else:
-            a = sns.barplot (None, self.closs_coefficient[:, 0], palette="BuGn_d")
+            a = sns.barplot (None, self.clos_coefficient[:, 0], palette="BuGn_d")
         a.set_ylabel("Closeness Coefficient")
         a.set_xlabel('Alternatives')
         fig = a.get_figure()

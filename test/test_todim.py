@@ -109,5 +109,5 @@ def test_delta():
 def test_closs_coefficient():
     td = TODIM(dec_mat_1, weights=[0.5107, 0.4893], theta=2.5)
     td.get_closeness_coefficient()
-    assert td.closs_coefficient.all() == np.asarray(closs_coeff).all()
+    assert td.clos_coefficient.all() == np.asarray(closs_coeff).all()
 
