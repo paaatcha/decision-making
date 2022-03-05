@@ -8,6 +8,50 @@ class TOPSIS:
 
     def __init__(self, matrix_d, cost_ben, weights=None, alt_col_name=None, crit_col_names=None,
                  dist_name="euclidean", normalize=True):
+        """
+        This class implements the TOPSIS algorithm (see README.md for references and citation).
+        In the examples' folder you can see how to use this class.
+
+        Parameters:
+        ----------
+        matrix_d: (str, pd.DataFrame, [[]], np.array)
+        This is the decision matrix. It may be a string, a pd.DataFrame, a list of lists, or a numpy array.
+        For all types except the string, it must be the decision matrix with its numerical values. In the DataFrame,
+        you may also inform the alternatives and criteria names. If it's string, it must be the path to a .csv file
+        to be loaded as a DataFrame
+
+        cost_ben: (str, list)
+        It represents the cost and benefits for each criterion. In brief, a criterion may be a cost or benefit one. The
+        cost means the lower, the better. On the other hand, the benefit means the higher, the better. As such, this
+        parameter controls the type of each criterion. If you pass a list, each position must assume ("c" or "cost") or
+        ("b" or "benefit"). For example, if your problem has 3 criteria, you may use cost_ben = ["c", "b", "c"], which
+        means that criteria 1 and 3 belongs to the type cost and 2 to benefit. If all your criteria belong to the same
+        type, you can use just a string to define all criteria. For example, if they are all cost, you may use:
+        cost_ben = "c" or cost_ben = "cost". This is just to save you some time.
+
+        weights: (list, np.array, None), optional
+        As the name suggest, it's the weights for each criterion within the decision matrix. Obviously, it must have one
+        weight for each criterion. However, if you set it as None (the default value), it assumes that all criteria have
+        the same weight. Regardless the option, the weights are always normalized.
+
+        alt_col_name: (str, None), optional
+        This is a string with the name of the alternative column. It must be informed if you're going to use the
+        matrix_d as a DataFrame of a path to a csv. Check the examples and test to understand it better. If you're a
+        list matrix or a numpy array, set it as None.
+
+        crit_col_names: (list, None), optional
+        This is a list of strings containing the name of each criterion column. It must be informed if you're going to
+        use the matrix_d as a DataFrame of a path to a csv. Check the examples and test to understand it better. If
+        you're a list matrix or a numpy array, set it as None.
+
+        dist_name: str, optional
+        It's the distance name you want to use. In this version, only the euclidean distance is available (the default
+        value). However, you're free to implement more in the distance() function (see the static function in the end
+        of this file)
+
+        normalize: boolean, optional
+        Set it as True if you want to normalize the decision matrix. Default is True.
+        """
 
         # If the matrix_d is a string, we load it from a csv file
         if isinstance(matrix_d, str):
@@ -86,23 +130,34 @@ class TOPSIS:
         print("-" * 50)
 
     def init(self):
-        # Applying the normalization (if applicable) and the weights
+        """
+        This method just applies the normalization (if applicable) followed by weighting to the self.matrix_d;
+        """
         if self.normalize:
             self.normalizing_matrix_d()
         self.apply_weights()
 
     def normalizing_matrix_d(self):
+        """
+        This method normalized the matrix_d according to the standard TOPSIS algorithm. You may change if if you want.
+        """
         m = self.matrix_d ** 2
         m = np.sqrt(m.sum(axis=0))
         self.matrix_d = self.matrix_d / m
 
     def apply_weights(self):
+        """
+        This method weights the criteria of the decision matrix according to the informed weights
+        """
         self.matrix_d = self.matrix_d * self.weights
 
     def get_ideal_solutions(self):
+        """
+        This method gets the ideal positive and negative solution for each criterion. The results are saved in
+        self.ideal_pos and self.ideal_neg arrays
+        """
         max_per_crit = self.matrix_d.max(axis=0)
         min_per_crit = self.matrix_d.min(axis=0)
-
         for j in range(self.n_crit):
             if self.cost_ben[j] in ["c", "cost"]:
                 self.ideal_pos[j] = min_per_crit[j]
@@ -113,8 +168,19 @@ class TOPSIS:
             else:
                 raise ValueError(f"The value {self.cost_ben[j]} is not valid at this moment. Check the documentation.")
 
-    def get_distance_to_ideal(self):
-        self.get_ideal_solutions()
+    def get_distance_to_ideal(self, compute_ideal_sol=True):
+        """
+        This method gets the distance to the ideal solutions for each criterion. The results are saved in self.dist_pos
+        and self.dist_neg arrays.
+
+        Parameter:
+        compute_ideal_sol: boolean, optional
+        Set it as true to perform the method self.get_ideal_solution(). It's useful if you want to call all methods
+        in individually (for debug, for example). Note that to run every thing at once using the method
+        self.get_closeness_coefficient() it must be True. Default is True.
+        """
+        if compute_ideal_sol:
+            self.get_ideal_solutions()
         for i in range(self.n_alt):
             for j in range(self.n_crit):
                 self.dist_pos[i] = self.dist_pos[i] + distance(self.matrix_d[i, j], self.ideal_pos[j],
@@ -125,8 +191,23 @@ class TOPSIS:
             self.dist_pos[i] = np.sqrt(self.dist_pos[i])
             self.dist_neg[i] = np.sqrt(self.dist_neg[i])
 
-    def get_closeness_coefficient(self, verbose=False):
-        self.get_distance_to_ideal()
+    def get_closeness_coefficient(self, verbose=False, compute_distance_ideal=True):
+        """
+        This method computes the closeness coefficient, which the ranking computed by TOPSIS.
+        The result is saved in self.closs_coefficient
+
+        Parameters:
+        verbose: (boolean), optional
+        Set is as true if you want to print the result on screen
+
+        compute_distance_ideal: boolean, optional
+        Set it as true to perform the method self.get_distance_to_ideal(). It's useful if you want to call all methods
+        in individually (for debug, for example). Note that to run every thing at once using the method
+        self.get_closeness_coefficient() it must be True. Default is True.
+        """
+
+        if compute_distance_ideal:
+            self.get_distance_to_ideal()
         for i in range(self.n_alt):
             self.clos_coefficient[i] = self.dist_neg[i] / (self.dist_pos[i] + self.dist_neg[i])
         self.clos_coefficient = self.clos_coefficient.squeeze()
@@ -174,7 +255,27 @@ class TOPSIS:
 # Static methods
 ########################################################################################################################
 def distance(a, b, which="euclidean"):
+    """
+    This function implements the distance to be used by the method TOPSIS.get_distance_to_ideal().
+
+    Parameters:
+    -----------
+    a: float
+    The first data point to compute the distance
+
+    b: float
+    The second datapoint to compute the distance
+
+    which: str, optional
+    It determines which distance to use. Default is euclidean
+
+    Returns:
+    _: float
+    The distance between a and b
+
+    """
     if which == "euclidean":
+        # Note that we don't need to perform the sqrt since it doesn't affect the final ranking
         return (a - b) ** 2
     else:
         raise ValueError(f"The {which} distance is not available at this moment!")

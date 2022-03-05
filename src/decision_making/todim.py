@@ -224,7 +224,8 @@ class TODIM:
         This method uses the Delta matrix to compute the closeness coefficient, which the ranking computed by TODIM.
         The result is saved in self.closs_coefficient
 
-        Parameters
+        Parameters:
+        -----------
         verbose: (boolean), optional
         Set is as true if you want to print the result on screen
         """
