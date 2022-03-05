@@ -6,7 +6,7 @@ import pandas as pd
 
 class TODIM:
 
-    def __init__ (self, matrix_d, weights=None, theta=2.5, alt_col_name=None, crit_col_names=None):
+    def __init__ (self, matrix_d, weights=None, theta=2.5, alt_col_name=None, crit_col_names=None, normalize=False):
         """
         This class implements the TODIM algorithm (see README.md for references and citation).
         In the examples' folder you can see how to use this class.
@@ -36,6 +36,9 @@ class TODIM:
         This is a list of strings containing the name of each criterion column. It must be informed if you're going to
         use the matrix_d as a DataFrame of a path to a csv. Check the examples and test to understand it better. If
         you're a list matrix or a numpy array, set it as None.
+
+        normalize: (boolean), optional
+        Set it as True if you want to normalize the decision matrix. Default is False.
         """
 
         # If the matrix_d is a string, we load it from a csv file
@@ -81,6 +84,10 @@ class TODIM:
         self.theta = theta
         self.delta = np.zeros_like(self.matrix_d, dtype=float)
         self.clos_coefficient = np.zeros([self.n_alt, 1], dtype=float)
+
+        # Normalizing the decision matrix (if applicable)
+        if normalize:
+            self.normalizing_matrix_d()
 
     def print(self):
         """
@@ -225,6 +232,7 @@ class TODIM:
         aux = self.delta.sum(axis=1)
         for i in range(self.n_alt):
             self.clos_coefficient[i] = (aux[i] - aux.min()) / (aux.max() - aux.min())
+        self.clos_coefficient = self.clos_coefficient.squeeze()
         if verbose:
             print (self.clos_coefficient)
 
@@ -252,9 +260,9 @@ class TODIM:
         if self.alternatives is not None:
             alt_names = self.alternatives
         if alt_names is not None:
-            a = sns.barplot (alt_names, self.clos_coefficient[:, 0], palette="BuGn_d")
+            a = sns.barplot (alt_names, self.clos_coefficient, palette="BuGn_d")
         else:
-            a = sns.barplot (None, self.clos_coefficient[:, 0], palette="BuGn_d")
+            a = sns.barplot (None, self.clos_coefficient, palette="BuGn_d")
         a.set_ylabel("Closeness Coefficient")
         a.set_xlabel('Alternatives')
         fig = a.get_figure()

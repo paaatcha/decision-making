@@ -31,18 +31,7 @@ delta = [
     [0.68570151, 0.82085436]
 ]
 
-closs_coeff = [
-     [0.        ],
-     [0.02486829],
-     [0.39209586],
-     [0.31041422],
-     [0.93245574],
-     [0.3727109 ],
-     [0.74886502],
-     [0.99960448],
-     [1.        ],
-     [0.92957362],
-]
+closs_coeff = [0., 0.02486829, 0.39209586, 0.31041422, 0.93245574, 0.3727109, 0.74886502, 0.99960448, 1., 0.92957362]
 
 
 def is_equal(a, b):
@@ -51,7 +40,7 @@ def is_equal(a, b):
 
 def test_input_from_csv_file_normal_flow():
     td = TODIM("dec_mat_1.csv", crit_col_names=["criterion 1", "criterion 2"], alt_col_name="alternative")
-    assert (td.matrix_d.all() == np.asarray(dec_mat_1).all())
+    assert np.allclose(td.matrix_d, dec_mat_1)
 
 
 def test_input_from_csv_file_alternative():
@@ -66,12 +55,12 @@ def test_input_from_csv_file_criteria():
 
 def test_input_from_list():
     td = TODIM(dec_mat_1)
-    assert is_equal(list(td.matrix_d), dec_mat_1)
+    assert np.allclose(td.matrix_d, dec_mat_1)
 
 
 def test_input_from_numpy():
     td = TODIM(np.array(dec_mat_1))
-    assert is_equal(list(td.matrix_d), dec_mat_1)
+    assert np.allclose(td.matrix_d, dec_mat_1)
 
 
 def test_input_invalid():
@@ -103,11 +92,11 @@ def test_weights_input():
 def test_delta():
     td = TODIM(dec_mat_1, weights=[0.5107, 0.4893], theta=2.5)
     td.get_delta()
-    assert td.delta.all() == np.asarray(delta).all()
+    assert np.allclose(td.delta, delta)
 
 
 def test_closs_coefficient():
     td = TODIM(dec_mat_1, weights=[0.5107, 0.4893], theta=2.5)
     td.get_closeness_coefficient()
-    assert td.clos_coefficient.all() == np.asarray(closs_coeff).all()
+    assert np.allclose(td.clos_coefficient, closs_coeff)
 
