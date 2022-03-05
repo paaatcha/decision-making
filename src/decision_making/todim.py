@@ -106,9 +106,7 @@ class TODIM:
         same criterion. The normalized matrix overwrites the self.matrix_d
         """
         crit_sum = self.matrix_d.sum(axis=0)
-        for i in range(self.n_alt):
-            for j in range(self.n_crit):
-                self.matrix_d[i,j] = self.matrix_d[i,j] / crit_sum[j]
+        self.matrix_d = self.matrix_d / crit_sum
 
     def get_distance(self, alt_i, alt_j, crit):
         """
@@ -131,7 +129,6 @@ class TODIM:
         _ : (float)
         The distance between the alternatives
         """
-
         return self.matrix_d[alt_i, crit] - self.matrix_d[alt_j, crit]
 
     def get_comparison(self, alt_i, alt_j, crit):

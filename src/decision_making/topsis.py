@@ -6,7 +6,8 @@ import pandas as pd
 
 class TOPSIS:
 
-    def __init__(self, matrix_d, cost_ben, weights=None, alt_col_name=None, crit_col_names=None, dist_name="euclidean"):
+    def __init__(self, matrix_d, cost_ben, weights=None, alt_col_name=None, crit_col_names=None,
+                 dist_name="euclidean", normalize=True):
 
         # If the matrix_d is a string, we load it from a csv file
         if isinstance(matrix_d, str):
@@ -52,6 +53,7 @@ class TOPSIS:
 
         self.cost_ben = cost_ben
         self.dist_name = dist_name
+        self.normalize = normalize
 
         self.clos_coefficient = np.zeros([self.n_alt, 1], dtype=float)
         self.ideal_pos = np.zeros(self.n_crit, dtype=float)
@@ -59,14 +61,7 @@ class TOPSIS:
         self.dist_pos = np.zeros (self.n_alt, dtype=float)
         self.dist_neg = np.zeros(self.n_alt, dtype=float)
 
-        # size = self.matrixD.shape
-        # [self.nAlt, self.nCri] = size
-        # self.normMatrixD = np.zeros(size, dtype=float)
-        # self.idealPos = np.zeros (self.nCri, dtype=float)
-        # self.idealNeg = np.zeros (self.nCri, dtype=float)
-        # self.dPos = np.zeros (self.nAlt, dtype=float)
-        # self.dNeg = np.zeros (self.nAlt, dtype=float)
-        # self.rCloseness = np.zeros (self.nAlt, dtype=float)
+        self.init()
 
     def print(self):
         """
@@ -86,13 +81,16 @@ class TOPSIS:
         print(f"- Cost and benefit: {self.cost_ben}")
         print("-" * 50)
 
+    def init(self):
+        # Applying the normalization (if applicable) and the weights
+        if self.normalize:
+            self.normalizing_matrix_d()
+        self.apply_weights()
+
     def normalizing_matrix_d(self):
         m = self.matrix_d ** 2
         m = np.sqrt(m.sum(axis=0))
-
-        for i in range(self.n_alt):
-            for j in range(self.n_crit):
-                self.matrix_d[i, j] = self.matrix_d[i, j] / m[j]
+        self.matrix_d = self.matrix_d / m
 
     def apply_weights(self):
         self.matrix_d = self.matrix_d * self.weights
@@ -112,7 +110,7 @@ class TOPSIS:
                 raise ValueError(f"The value {self.cost_ben[j]} is not valid at this moment. Check the documentation.")
 
     def get_distance_to_ideal(self):
-
+        self.get_ideal_solutions()
         for i in range(self.n_alt):
             for j in range(self.n_crit):
                 self.dist_pos[i] = self.dist_pos[i] + distance(self.matrix_d[i, j], self.ideal_pos[j],
@@ -124,6 +122,7 @@ class TOPSIS:
             self.dist_neg[i] = np.sqrt(self.dist_neg[i])
 
     def get_closeness_coefficient(self, verbose=False):
+        self.get_distance_to_ideal()
         for i in range(self.n_alt):
             self.clos_coefficient[i] = self.dist_neg[i] / (self.dist_pos[i] + self.dist_neg[i])
         if verbose:

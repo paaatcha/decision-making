@@ -10,6 +10,11 @@ dec_mat_2 = [
     [12, 7, 35000, 7],
     [10, 9, 55000, 8]
 ]
+dec_norm_w = [
+    [0.20779069, 0.02328452, 0.21483446, 0.0274986],
+    [0.16623255, 0.02716527, 0.30076825, 0.0274986],
+    [0.13852713, 0.03492677, 0.47263582, 0.03142697]
+]
 alternatives = ["Alt 1", "Alt 2", "Alt 3"]
 criteria = ["criterion 1", "criterion 2", "criterion 3", "criterion 4"]
 weights = [0.3, 0.05, 0.6, 0.05]
@@ -77,16 +82,22 @@ def test_weights_input():
         _ = TOPSIS(dec_mat_2, cost_ben, weights=10)
 
 
-def test_ideal_solutions():
-    tp = TOPSIS(dec_mat_2, cost_ben, weights=weights)
-    tp.get_ideal_solutions()
-    assert tp.ideal_neg.all() == np.asarray(ideal_neg).all()
-    assert tp.ideal_pos.all() == np.asarray(ideal_pos).all()
+def test_normalization_and_apply_weights():
+    tp = TOPSIS(dec_mat_2, cost_ben, weights=weights, normalize=True)
+    tp.init()
+    assert (tp.matrix_d == dec_norm_w).all()
 
 
-def test_ideal_distances():
-    tp = TOPSIS(dec_mat_2, cost_ben, weights=weights)
-    tp.get_ideal_solutions()
-    tp.get_distance_to_ideal()
-    assert tp.ideal_neg.all() == np.asarray(ideal_neg).all()
-    assert tp.ideal_pos.all() == np.asarray(ideal_pos).all()
+# def test_ideal_solutions():
+#     tp = TOPSIS(dec_mat_2, cost_ben, weights=weights)
+#     tp.get_ideal_solutions()
+#     assert tp.ideal_neg.all() == np.asarray(ideal_neg).all()
+#     assert tp.ideal_pos.all() == np.asarray(ideal_pos).all()
+#
+#
+# def test_ideal_distances():
+#     tp = TOPSIS(dec_mat_2, cost_ben, weights=weights)
+#     tp.get_ideal_solutions()
+#     tp.get_distance_to_ideal()
+#     assert tp.ideal_neg.all() == np.asarray(ideal_neg).all()
+#     assert tp.ideal_pos.all() == np.asarray(ideal_pos).all()

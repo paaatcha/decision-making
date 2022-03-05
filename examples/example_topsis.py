@@ -9,7 +9,6 @@ import sys
 sys.path.append("../src")
 from decision_making import TOPSIS
 
-
 dec_mat_2 = [
     [15, 6, 25000, 7],
     [12, 7, 35000, 7],
@@ -28,11 +27,9 @@ cost_ben = ["c", "b", "c", "b"]
 
 
 tp = TOPSIS(dec_mat_2, cost_ben, weights=weights)
-
-# tp.normalizing_matrix_d()
 # tp.apply_weights()
-tp.get_ideal_solutions()
-print(tp.ideal_neg)
-print(tp.ideal_pos)
+# tp.get_ideal_solutions()
+# print(tp.ideal_neg)
+# print(tp.ideal_pos)
 # tp.get_distance_to_ideal()
-# tp.get_closeness_coefficient(verbose=True)
+tp.get_closeness_coefficient(verbose=True)
