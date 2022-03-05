@@ -1,8 +1,8 @@
 import numpy as np
 import pytest
 import sys
-sys.path.append("../")
-from methods import todim
+sys.path.append("../src")
+from decision_making import TODIM
 
 dec_mat_1 = [
     [8.627, 5.223],
@@ -44,69 +44,70 @@ closs_coeff = [
      [0.92957362],
 ]
 
+
 def is_equal(a, b):
     return all(a[i][j] == b[i][j] for i in range(len(a)) for j in range(len(a[0])))
 
 
 def test_input_from_csv_file_normal_flow():
-    td = todim.TODIM("dec_mat_1.csv", crit_col_names=["criterion 1", "criterion 2"], alt_col_name="alternative")
+    td = TODIM("dec_mat_1.csv", crit_col_names=["criterion 1", "criterion 2"], alt_col_name="alternative")
     assert (td.matrix_d.all() == np.asarray(dec_mat_1).all())
 
 
 def test_input_from_csv_file_alternative():
-    td = todim.TODIM("dec_mat_1.csv", crit_col_names=["criterion 1", "criterion 2"], alt_col_name="alternative")
+    td = TODIM("dec_mat_1.csv", crit_col_names=["criterion 1", "criterion 2"], alt_col_name="alternative")
     assert is_equal(list(td.alternatives), alternatives_1)
 
 
 def test_input_from_csv_file_criteria():
-    td = todim.TODIM("dec_mat_1.csv", crit_col_names=["criterion 1", "criterion 2"], alt_col_name="alternative")
+    td = TODIM("dec_mat_1.csv", crit_col_names=["criterion 1", "criterion 2"], alt_col_name="alternative")
     assert is_equal(list(td.criteria), criteria_1)
 
 
 def test_input_from_list():
-    td = todim.TODIM(dec_mat_1)
+    td = TODIM(dec_mat_1)
     assert is_equal(list(td.matrix_d), dec_mat_1)
 
 
 def test_input_from_numpy():
-    td = todim.TODIM(np.array(dec_mat_1))
+    td = TODIM(np.array(dec_mat_1))
     assert is_equal(list(td.matrix_d), dec_mat_1)
 
 
 def test_input_invalid():
     with pytest.raises(ValueError):
-        td = todim.TODIM(10)
+        td = TODIM(10)
 
 
 def test_num_crit_alter():
-    td = todim.TODIM(dec_mat_1)
+    td = TODIM(dec_mat_1)
     assert td.n_alt == 10
     assert td.n_crit == 2
 
 
 def test_weights_none():
-    td = todim.TODIM(dec_mat_1)
+    td = TODIM(dec_mat_1)
     assert td.n_crit == len(td.weights)
     assert np.isclose(td.weights.sum(), 1.0)
 
 
 def test_weights_input():
-    td2 = todim.TODIM(dec_mat_1, weights=[1, 2])
+    td2 = TODIM(dec_mat_1, weights=[1, 2])
     assert np.isclose(td2.weights.sum(), 1.0)
     with pytest.raises(ValueError):
-        td3 = todim.TODIM(dec_mat_1, weights=[1, 2, 3])
+        td3 = TODIM(dec_mat_1, weights=[1, 2, 3])
     with pytest.raises(ValueError):
-        td4 = todim.TODIM(dec_mat_1, weights=10)
+        td4 = TODIM(dec_mat_1, weights=10)
 
 
 def test_delta():
-    td = todim.TODIM(dec_mat_1, weights=[0.5107, 0.4893], theta=2.5)
+    td = TODIM(dec_mat_1, weights=[0.5107, 0.4893], theta=2.5)
     td.get_delta()
     assert td.delta.all() == np.asarray(delta).all()
 
 
 def test_closs_coefficient():
-    td = todim.TODIM(dec_mat_1, weights=[0.5107, 0.4893], theta=2.5)
+    td = TODIM(dec_mat_1, weights=[0.5107, 0.4893], theta=2.5)
     td.get_closeness_coefficient()
     assert td.closs_coefficient.all() == np.asarray(closs_coeff).all()
 

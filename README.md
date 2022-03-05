@@ -16,3 +16,20 @@ If you find any bug, please, email-me.
 * NumPy
 * Matplotlib
 * Seaborn
+
+
+
+## References
+For more information about todim:
+
+- L.F.A.M. Gomes, M.M.P.P. Lima todim: Basics and application to multicriteria ranking of projects with environmental impacts
+Foundations of Computing and Decision Sciences, 16 (4) (1992), pp. 113-127
+            
+
+- Krohling, Renato A., Andre GC Pacheco, and Andre LT Siviero. IF-todim: An intuitionistic fuzzy todim to multi-criteria decision
+making. Knowledge-Based Systems 53, (2013), pp. 142-146.
+        
+
+- Lourenzutti, R. and Khroling, R. A study of todim in a intuitionistic fuzzy and random environment,
+Expert Systems with Applications, Expert Systems with Applications 40, (2013), pp. 6459-6468
+

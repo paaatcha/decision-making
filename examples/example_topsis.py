@@ -11,7 +11,7 @@ from __future__ import print_function
 from __future__ import division
 from __future__ import absolute_import
 
-from methods.topsis import TOPSIS
+from src.decision_making.topsis import TOPSIS
 import numpy as np
 
 A = TOPSIS ('decisionMatrix.txt')

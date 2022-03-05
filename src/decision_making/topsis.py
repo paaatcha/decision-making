@@ -7,7 +7,7 @@ In order to use it, you need to inform the decision matrix, criteria's weights a
 You can set these parameters in an external file .txt or just call the constructors passing 
 the variables as parameters.
 
-In the file task_topsis.py there is an examples showing how to use this class.
+In the file example_topsis.py there is an examples showing how to use this class.
 
 For more information about topsis:
 

@@ -10,7 +10,7 @@ from __future__ import print_function
 from __future__ import division
 from __future__ import absolute_import
 
-from methods.todim import TODIM
+from src.decision_making.todim import TODIM
 
 A = TODIM ('decisionMatrix.txt')
 A.getRCloseness(verbose=True)
