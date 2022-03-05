@@ -33,3 +33,12 @@ making. Knowledge-Based Systems 53, (2013), pp. 142-146.
 - Lourenzutti, R. and Khroling, R. A study of todim in a intuitionistic fuzzy and random environment,
 Expert Systems with Applications, Expert Systems with Applications 40, (2013), pp. 6459-6468
 
+For more information about TOPSIS:
+
+- C.L. Hwang & K.P. Yoon, Multiple Attributes Decision Making Methods and Applications, Springer-Verlag, Berlin, 1981.
+
+- Krohling, Renato A., Andre GC Pacheco, and Andre LT Siviero. IF-todim: An intuitionistic fuzzy todim to multi-criteria decision making. Knowledge-Based Systems 53 #	(2013): 142-146.
+
+
+
+## If you use this code, consider citing the papers:

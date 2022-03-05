@@ -1,5 +1,5 @@
 """
-This is a straighforwarding example of how to use the TODIM algorithm with this package.
+This is a straightforward example of how to use the TODIM algorithm with this package.
 This example uses two approaches:
 1: using the decision matrix inside a csv file
 2: using a matrix in a list of lists

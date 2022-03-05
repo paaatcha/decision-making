@@ -82,7 +82,6 @@ class TODIM:
         self.delta = np.zeros_like(self.matrix_d, dtype=float)
         self.clos_coefficient = np.zeros([self.n_alt, 1], dtype=float)
 
-
     def print(self):
         """
         A simple method to print the decision matrix, weights, and theta
@@ -134,9 +133,8 @@ class TODIM:
         """
 
         return self.matrix_d[alt_i, crit] - self.matrix_d[alt_j, crit]
-    
 
-    def get_comparison (self, alt_i, alt_j, crit):
+    def get_comparison(self, alt_i, alt_j, crit):
         """
         This method computes the distance between two alternatives for the same critetion. This is the standard way
         proposed by the TODIM method. However, there are some variants described in the literature. Thus, the
@@ -161,7 +159,7 @@ class TODIM:
         """
         return self.get_distance(alt_i, alt_j, crit)
 
-    def get_delta (self):
+    def get_delta(self):
         """
         This method computes the Delta matrix as described in the TODIM algorithm. The result is saved in self.delta.
         """
@@ -169,7 +167,7 @@ class TODIM:
             for j in range(self.n_crit):
                 self.delta[i, j] = self.get_sum_phi(i,j)
                 
-    def get_sum_phi (self, i, j):
+    def get_sum_phi(self, i, j):
         """
         This method computes accumulated values of the Phi matrix as described in the TODIM algorithm.
 
@@ -190,7 +188,7 @@ class TODIM:
             accum = accum + self.get_phi_matriz(i,j,c)
         return accum
     
-    def get_phi_matriz (self, i, j, c):
+    def get_phi_matriz(self, i, j, c):
         """
         This method computes the Phi matrix as described in the TODIM algorithm.
 
@@ -217,7 +215,7 @@ class TODIM:
         else:
             return np.sqrt(self.weights[c]*abs(dij))/(-self.theta)
 
-    def get_closeness_coefficient (self, verbose=False):
+    def get_closeness_coefficient(self, verbose=False):
         """
         This method uses the Delta matrix to compute the closeness coefficient, which the ranking computed by TODIM.
         The result is saved in self.closs_coefficient
