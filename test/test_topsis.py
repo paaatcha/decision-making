@@ -32,12 +32,12 @@ def is_equal(a, b):
 
 
 def test_input_from_csv_file_normal_flow():
-    tp = TOPSIS("dec_mat_2.csv", cost_ben, crit_col_names=criteria, alt_col_name="alternative")
-    assert (tp.matrix_d.all() == np.asarray(dec_mat_2).all())
+    tp = TOPSIS("dec_mat_2.csv", cost_ben, weights=weights, crit_col_names=criteria, alt_col_name="alternative")
+    assert np.allclose(tp.matrix_d, dec_norm_w)
 
 
 def test_input_from_csv_file_alternative():
-    tp = TOPSIS("dec_mat_2.csv", cost_ben, crit_col_names=criteria, alt_col_name="alternative")
+    tp = TOPSIS("dec_mat_2.csv", cost_ben,weights=weights, crit_col_names=criteria, alt_col_name="alternative")
     assert is_equal(list(tp.alternatives), alternatives)
 
 
@@ -47,13 +47,13 @@ def test_input_from_csv_file_criteria():
 
 
 def test_input_from_list():
-    tp = TOPSIS(dec_mat_2, cost_ben)
-    assert is_equal(list(tp.matrix_d), dec_mat_2)
+    tp = TOPSIS(dec_mat_2, cost_ben, weights=weights)
+    assert np.allclose(tp.matrix_d, dec_norm_w)
 
 
 def test_input_from_numpy():
-    tp = TOPSIS(dec_mat_2, cost_ben)
-    assert is_equal(list(tp.matrix_d), dec_mat_2)
+    tp = TOPSIS(np.array(dec_mat_2), cost_ben, weights=weights)
+    assert np.allclose(tp.matrix_d, dec_norm_w)
 
 
 def test_input_invalid():
@@ -82,22 +82,21 @@ def test_weights_input():
         _ = TOPSIS(dec_mat_2, cost_ben, weights=10)
 
 
-def test_normalization_and_apply_weights():
-    tp = TOPSIS(dec_mat_2, cost_ben, weights=weights, normalize=True)
-    tp.init()
-    assert (tp.matrix_d == dec_norm_w).all()
+def test_ideal_solutions():
+    tp = TOPSIS(dec_mat_2, cost_ben, weights=weights)
+    tp.get_ideal_solutions()
+    assert np.allclose(tp.ideal_neg, ideal_neg)
+    assert np.allclose(ideal_pos, ideal_pos)
 
 
-# def test_ideal_solutions():
-#     tp = TOPSIS(dec_mat_2, cost_ben, weights=weights)
-#     tp.get_ideal_solutions()
-#     assert tp.ideal_neg.all() == np.asarray(ideal_neg).all()
-#     assert tp.ideal_pos.all() == np.asarray(ideal_pos).all()
-#
-#
-# def test_ideal_distances():
-#     tp = TOPSIS(dec_mat_2, cost_ben, weights=weights)
-#     tp.get_ideal_solutions()
-#     tp.get_distance_to_ideal()
-#     assert tp.ideal_neg.all() == np.asarray(ideal_neg).all()
-#     assert tp.ideal_pos.all() == np.asarray(ideal_pos).all()
+def test_ideal_distances():
+    tp = TOPSIS(dec_mat_2, cost_ben, weights=weights)
+    tp.get_distance_to_ideal()
+    assert np.allclose(tp.dist_neg, dist_neg)
+    assert np.allclose(tp.dist_pos, dist_pos)
+
+
+def test_clos_coefficient():
+    tp = TOPSIS(dec_mat_2, cost_ben, weights=weights)
+    tp.get_closeness_coefficient()
+    assert np.allclose(tp.clos_coefficient, clos_coefficient)

@@ -19,17 +19,26 @@ criteria = ["criterion 1", "criterion 2", "criterion 3", "criterion 4"]
 weights = [0.3, 0.05, 0.6, 0.05]
 cost_ben = ["c", "b", "c", "b"]
 
-# ideal_pos = [0.13852713, 0.03492677, 0.21483446, 0.03142697]
-# ideal_neg = [0.20779069, 0.02328452, 0.47263582, 0.0274986]
-# dist_pos = [0.07034498, 0.09070766, 0.25780135]
-# dist_neg = [0.25780135, 0.17686323, 0.07034498]
-# clos_coefficient = [0.78562925, 0.66099579, 0.21437075]
-
-
-tp = TOPSIS(dec_mat_2, cost_ben, weights=weights)
-# tp.apply_weights()
-# tp.get_ideal_solutions()
-# print(tp.ideal_neg)
-# print(tp.ideal_pos)
-# tp.get_distance_to_ideal()
+########################################################################################################################
+# Approach 1: using the csv file in "../test/dec_mat_2.csv"
+########################################################################################################################
+print("-" * 50)
+print("- Approach 1:")
+print("-" * 50)
+tp = TOPSIS("../test/dec_mat_2.csv", cost_ben, weights=weights, alt_col_name="alternative", crit_col_names=criteria)
 tp.get_closeness_coefficient(verbose=True)
+tp.plot_ranking()
+print("-" * 50)
+print("")
+
+########################################################################################################################
+# Approach 2: using the matrix as a list of list (but it could be a numpy array as well
+########################################################################################################################
+print("-" * 50)
+print("- Approach 2:")
+print("-" * 50)
+tp = TOPSIS(dec_mat_2, cost_ben, weights=weights)
+tp.get_closeness_coefficient(verbose=True)
+tp.plot_ranking(alt_names=alternatives)
+print("-" * 50)
+print("")

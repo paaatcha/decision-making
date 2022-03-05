@@ -125,6 +125,7 @@ class TOPSIS:
         self.get_distance_to_ideal()
         for i in range(self.n_alt):
             self.clos_coefficient[i] = self.dist_neg[i] / (self.dist_pos[i] + self.dist_neg[i])
+        self.clos_coefficient = self.clos_coefficient.squeeze()
         if verbose:
             print (self.clos_coefficient)
 
@@ -152,9 +153,9 @@ class TOPSIS:
         if self.alternatives is not None:
             alt_names = self.alternatives
         if alt_names is not None:
-            a = sns.barplot(alt_names, self.clos_coefficient[:, 0], palette="BuGn_d")
+            a = sns.barplot(alt_names, self.clos_coefficient, palette="BuGn_d")
         else:
-            a = sns.barplot(None, self.clos_coefficient[:, 0], palette="BuGn_d")
+            a = sns.barplot(None, self.clos_coefficient, palette="BuGn_d")
         a.set_ylabel("Closeness Coefficient")
         a.set_xlabel('Alternatives')
         fig = a.get_figure()
