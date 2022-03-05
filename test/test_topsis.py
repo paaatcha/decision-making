@@ -46,6 +46,11 @@ def test_input_from_csv_file_criteria():
     assert is_equal(list(tp.criteria), criteria)
 
 
+def test_cost_ben_str():
+    tp = TOPSIS("dec_mat_2.csv", "cost", crit_col_names=criteria, alt_col_name="alternative")
+    assert is_equal(list(tp.cost_ben), ["cost"]*4)
+
+
 def test_input_from_list():
     tp = TOPSIS(dec_mat_2, cost_ben, weights=weights)
     assert np.allclose(tp.matrix_d, dec_norm_w)

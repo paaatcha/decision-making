@@ -40,5 +40,14 @@ For more information about TOPSIS:
 - Krohling, Renato A., Andre GC Pacheco, and Andre LT Siviero. IF-todim: An intuitionistic fuzzy todim to multi-criteria decision making. Knowledge-Based Systems 53 #	(2013): 142-146.
 
 
+For more information about A-TOPSIS:
+- Krohling, R. A., and Pacheco, A.G.C. a_topsis - an approach based on topsis for ranking
+  evolutionary algorithms. Procedia Computer Science 55 (2015): 308-317.
+
+- Pacheco, A.G.C. and Krohling, R.A. "Ranking of Classification Algorithms in Terms of 
+  Mean-Standard Deviation Using a_topsis". Annals of Data Science (2016), pp.1-18.
+
+If you find some bug, please e-mail me =)
+
 
 ## If you use this code, consider citing the papers:

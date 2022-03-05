@@ -51,7 +51,11 @@ class TOPSIS:
                 self.weights = self.weights / self.weights.sum()
                 print("INFO: the weights were normalized within the interval [0,1]")
 
-        self.cost_ben = cost_ben
+        if isinstance(cost_ben, list):
+            self.cost_ben = cost_ben
+        elif isinstance(cost_ben, str):
+            self.cost_ben = [cost_ben] * self.n_crit
+
         self.dist_name = dist_name
         self.normalize = normalize
 
