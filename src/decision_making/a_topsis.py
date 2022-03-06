@@ -1,20 +1,25 @@
 import numpy as np
-import pandas as pd
 from decision_making.topsis import TOPSIS
 
 class ATOPSIS:
 
     def __init__(self, avg_mat, std_mat, weights=(0.75, 0.25), avg_cost_ben="benefit", std_cost_ben="cost",
-                 alg_col_name=None, bench_col_names=None, bench_weights=None):
+                 alg_col_name=None, bench_col_names=None, bench_weights=None, normalize=False):
 
         self.avg_topsis = TOPSIS(avg_mat, weights=bench_weights, cost_ben=avg_cost_ben, alt_col_name=alg_col_name,
-                                 crit_col_names=bench_col_names)
+                                 crit_col_names=bench_col_names, normalize=normalize)
         self.std_topsis = TOPSIS(std_mat, weights=bench_weights, cost_ben=std_cost_ben, alt_col_name=alg_col_name,
-                                 crit_col_names=bench_col_names)
+                                 crit_col_names=bench_col_names, normalize=normalize)
         self.weights = list(weights)
 
         if not (self.avg_topsis.matrix_d.shape == self.std_topsis.matrix_d.shape):
             raise ValueError("The avg_mat and std_mat must have the same shape!")
+
+        self.avg_ranking = None
+        self.std_ranking = None
+        self.matrix_d = None
+        self.final_topsis = None
+        self.final_ranking = None
 
     def get_avg_ranking(self):
         self.avg_topsis.get_closeness_coefficient()
@@ -28,10 +33,13 @@ class ATOPSIS:
         self.get_avg_ranking()
         self.get_std_ranking()
         self.matrix_d = np.array([self.avg_ranking, self.std_ranking]).T
-        self.final_topsis = TOPSIS(self.matrix_d, weights=self.weights, cost_ben="b")
-        self.final_ranking = self.final_topsis.get_closeness_coefficient(verbose)
+        self.final_topsis = TOPSIS(self.matrix_d, weights=self.weights, cost_ben="b", normalize=False)
+        self.final_topsis.get_closeness_coefficient(verbose)
+        self.final_ranking = self.final_topsis.clos_coefficient
 
     def plot_ranking(self, alt_names=None, save_path=None, show=True):
+        if alt_names is None:
+            alt_names = self.final_topsis.alternatives
         self.final_topsis.plot_ranking(alt_names, save_path, show)
 
 

@@ -219,7 +219,7 @@ class TODIM:
         else:
             return np.sqrt(self.weights[c]*abs(dij))/(-self.theta)
 
-    def get_closeness_coefficient(self, verbose=False):
+    def get_closeness_coefficient(self, verbose=False, compute_delta=True):
         """
         This method uses the Delta matrix to compute the closeness coefficient, which the ranking computed by TODIM.
         The result is saved in self.closs_coefficient
@@ -228,8 +228,14 @@ class TODIM:
         -----------
         verbose: (boolean), optional
         Set is as true if you want to print the result on screen
+
+        compute_delta: boolean, optional
+        Set it as true to perform the method self.get_delta(). It's useful if you want to call all methods
+        in individually (for debug, for example). Note that to run everything at once using the method
+        self.get_closeness_coefficient() it must be True. Default is True.
         """
-        self.get_delta()
+        if compute_delta:
+            self.get_delta()
         aux = self.delta.sum(axis=1)
         for i in range(self.n_alt):
             self.clos_coefficient[i] = (aux[i] - aux.min()) / (aux.max() - aux.min())
@@ -261,7 +267,8 @@ class TODIM:
         if self.alternatives is not None:
             alt_names = self.alternatives
         if alt_names is not None:
-            a = sns.barplot (alt_names, self.clos_coefficient, palette="BuGn_d")
+            temp = [f"A{n}" for n in range(1, len(self.clos_coefficient) + 1, 1)]
+            a = sns.barplot(temp, self.clos_coefficient, palette="BuGn_d")
         else:
             a = sns.barplot (None, self.clos_coefficient, palette="BuGn_d")
         a.set_ylabel("Closeness Coefficient")

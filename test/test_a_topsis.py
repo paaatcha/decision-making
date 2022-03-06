@@ -1,5 +1,4 @@
 import numpy as np
-import pytest
 import sys
 sys.path.append("../src")
 from decision_making import ATOPSIS
@@ -29,14 +28,14 @@ def test_everything_from_csv():
     atop = ATOPSIS("../test/avg_mat.csv", "../test/std_mat.csv", alg_col_name="Algorithms",
                    avg_cost_ben="cost", std_cost_ben="cost", weights=[0.6, 0.4],
                    bench_col_names=["B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B9", "B10", "B11"])
-    atop.get_ranking()
+    atop.get_ranking(verbose=False)
     assert np.allclose(atop.final_topsis.matrix_d, merged_mat_w)
     assert np.allclose(atop.final_ranking, rank)
 
 
 def test_everything_from_lists():
     atop = ATOPSIS(avg_mat, std_mat, avg_cost_ben="cost", std_cost_ben="cost", weights=[0.6, 0.4])
-    atop.get_ranking()
+    atop.get_ranking(verbose=False)
     assert np.allclose(atop.final_topsis.matrix_d, merged_mat_w)
     assert np.allclose(atop.final_ranking, rank)
 
