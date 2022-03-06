@@ -31,8 +31,8 @@ class TOPSIS:
 
         weights: (list, np.array, None), optional
         As the name suggest, it's the weights for each criterion within the decision matrix. Obviously, it must have one
-        weight for each criterion. However, if you set it as None (the default value), it assumes that all criteria have
-        the same weight. Regardless the option, the weights are always normalized.
+        weight for each criterion. However, if you set it as None, it assumes that all criteria have the same weight.
+        Regardless the option, the weights are always normalized within the interval [0,1]. Default is None.
 
         alt_col_name: (str, None), optional
         This is a string with the name of the alternative column. It must be informed if you're going to use the
@@ -223,8 +223,8 @@ class TOPSIS:
         alt_names: (list), optional
         This is a list of names for each alternative within the decision matrix. If you're using a DataFrame, you have
         already defined when you set the alt_col_name. So, you may let it as None. However, if you're using a matrix
-        list or a numpy array, you may pass the alternatives name here. If you let it as None, there will be no
-        alternatives name in the plot. Default is None
+        list or a numpy array, you may pass the alternatives name here. If you let it as None, there will be a default
+        alternatives name in the plot (ex: A1, A2, etc). Default is None
 
         save_path: (str), optional
         It's the full path (including the figure name and extension) to save the plot. If you let it None, the plot

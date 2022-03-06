@@ -50,7 +50,7 @@ print("- Approach 2:")
 print("-" * 50)
 atop = ATOPSIS(avg_mat, std_mat, avg_cost_ben="cost", std_cost_ben="cost", weights=[0.6, 0.4])
 atop.get_ranking(True)
-atop.plot_ranking(alt_names=["Alg1", "Alg2", "Alg3", "Alg4"])
+atop.plot_ranking(alg_names=["Alg1", "Alg2", "Alg3", "Alg4"])
 print("-" * 50)
 print("")
 
