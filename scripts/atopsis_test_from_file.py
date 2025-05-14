@@ -14,30 +14,40 @@ def load_dataset(file_folder_path):
         return None
     
 
-if __name__=="__main__":
-    file_folder_path = "../dataset/agg_metablockse_jbhi.csv"
+if __name__ == "__main__":
+    file_folder_path = "../dataset/agg_metablockse_jbhi_pad-25.csv"
     dataset = load_dataset(file_folder_path)
-    ## Filtrar pelo modelo desejado
-    # dataset = dataset[dataset['visual-feature-extractor']=="resnet-50"]
-
-    ## Filtrar os dados pela métrica desejada
-    dataset = dataset[dataset['missing-data-percenteage']==0]
-
-    ## Para os dados referentes aos parâmetros desejos
-    # dataset = dataset[dataset['metric']!=('auc' and 'f1_score')]
-
-
-    print(dataset)
-    # Os algoritmos a serem testados
-    alg_names = dataset['method'].unique()
-
-    # Ordenar as saídas dos dados por parâmetro
-    avg_mat = np.array(dataset['AVG']).reshape(len(alg_names),-1)
-    std_mat = np.array(dataset['STD']).reshape(len(alg_names),-1)
     
-    # Pesos das decisões
-    weights = [0.7, 0.3]
+    if dataset is None:
+        sys.exit("Dataset could not be loaded. Exiting...")
+
+    # Group the dataset by the 'comb_method'
+    grouped_data = dataset.groupby('comb_method')
+
+    # Initialize an empty list to store the ordered groups
+    ordered_dataset = []
+
+    # Iterate through each group (i.e., each unique comb_method)
+    for comb_method, group in grouped_data:
+        ordered_dataset.append(group)  # Append each group to the list
+
+    # Concatenate all the groups into a single ordered DataFrame
+    ordered_dataset = pd.concat(ordered_dataset)
+
+    print(f"Dataset reordenado:\n{ordered_dataset}\n")
+    # Get the unique 'alg_names' for the ordered dataset
+    alg_names = ordered_dataset['comb_method'].unique()
+
+    # Prepare the matrices for A-TOPSIS
+    avg_mat = np.array(ordered_dataset['AVG']).reshape(len(alg_names), -1)
+    std_mat = np.array(ordered_dataset['STD']).reshape(len(alg_names), -1)
         
+    print("Average matrix:")
+    print(avg_mat)
+        
+    # Weights for decision-making
+    weights = [0.7, 0.3]
+       
     try:
         atop = ATOPSIS(avg_mat, std_mat, avg_cost_ben="benefit", std_cost_ben="cost", weights=weights)
         atop.get_ranking(True)
@@ -47,5 +57,3 @@ if __name__=="__main__":
 
     print("-" * 50)
     print("")
-
-
