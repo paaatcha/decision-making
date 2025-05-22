@@ -75,5 +75,5 @@ if __name__ == "__main__":
     print(result.sort_values("rank"))
 
     # 6) Plota com os próprios nomes
-    atop.plot_ranking(save_path="../images/a_topsis.png", alg_names=alg_names, show=True, font_size=25, title="A-TOPSIS for PAD-UFES-20-Extended dataset", y_axis_title="Scores", x_axis_title="Methods", ascending=True)
+    atop.plot_ranking(save_path="../images/a_topsis_PAD_20_extended.png", alg_names=alg_names, show=True, font_size=25, title="", y_axis_title="Scores", x_axis_title="", ascending=True, fig_size=(21, 14))
 
