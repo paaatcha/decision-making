@@ -104,7 +104,7 @@ class ATOPSIS:
         self.final_topsis.get_closeness_coefficient(verbose)
         self.final_ranking = self.final_topsis.clos_coefficient
 
-    def plot_ranking(self, alg_names=None, save_path=None, show=True):
+    def plot_ranking(self, alg_names=None, save_path=None, show=True, font_size=16, title="A-TOPSIS test", y_axis_title="Scores", x_axis_title="Methods", ascending=False, fig_size=(6,4)):
         """
         This method plots the ranking, according to the final_ranking, in a bar plot.
 
@@ -125,7 +125,7 @@ class ATOPSIS:
         """
         if alg_names is None:
             alg_names = self.final_topsis.alternatives
-        self.final_topsis.plot_ranking(alg_names, save_path, show)
+        self.final_topsis.plot_ranking(alg_names, save_path, show, font_size, title, y_axis_title, x_axis_title, ascending=ascending, fig_size=fig_size)
 
 
 
