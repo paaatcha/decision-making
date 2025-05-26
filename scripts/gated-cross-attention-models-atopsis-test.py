@@ -1,9 +1,10 @@
+import os
 import sys
 import pandas as pd
 import numpy as np
 
 # 1) Ajuste do path para importar o ATOPSIS
-sys.path.append("../../src")
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
 from decision_making import ATOPSIS
 
 
@@ -41,11 +42,11 @@ def main(file_path):
     avg_mat = grouped[[f"{m}_mean" for m in metrics]].values.tolist()
     std_mat = grouped[[f"{m}_std"  for m in metrics]].values.tolist()
     alg_names = grouped["attention_mecanism"].tolist()
-
+    # alg_names = grouped["model_name"].tolist()
     # 7) Executa A‑TOPSIS (listas de listas)
     #    avg_cost_ben="benefit"
     #    std_cost_ben="cost"
-    weights_presetted = [0.75, 0.25]
+    weights_presetted = [0.7, 0.3]
 
     # Executa A‑TOPSIS em memória (listas de listas)
     atop = ATOPSIS(
@@ -79,9 +80,9 @@ def main(file_path):
     print(result.sort_values("rank"))
 
     # 6) Plota com os próprios nomes
-    atop.plot_ranking(save_path="../../data/images/a_topsis.png", alg_names=alg_names, show=True, font_size=22, title="A-TOPSIS for PAD-UFES-20 dataset", y_axis_title="Scores", x_axis_title="Methods")
+    atop.plot_ranking(save_path="./images/a_topsis_PAD_UFES_20.png", alg_names=alg_names, show=True, font_size=16, title="", y_axis_title="Scores", x_axis_title="Methods", ascending=True)
 
 if __name__=="__main__":
-    file_path = "../../data/metrics.csv"
+    file_path = "dataset/agg_residual-block-pad-ufes-20.csv"
     # Função principal
     main(file_path=file_path)

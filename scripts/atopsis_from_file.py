@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import numpy as np
 import sys
-sys.path.append("../src")
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
 from decision_making import ATOPSIS
 
 def load_dataset(file_folder_path):
@@ -15,7 +15,7 @@ def load_dataset(file_folder_path):
     
 
 if __name__ == "__main__":
-    file_folder_path = "../dataset/agg_metablockse_jbhi_pad-25.csv"
+    file_folder_path = "./dataset/agg_metablockse_jbhi_pad-25.csv"
     dataset = load_dataset(file_folder_path)
     
     if dataset is None:
@@ -75,5 +75,5 @@ if __name__ == "__main__":
     print(result.sort_values("rank"))
 
     # 6) Plota com os próprios nomes
-    atop.plot_ranking(save_path="../images/a_topsis_PAD_20_extended.png", alg_names=alg_names, show=True, font_size=25, title="", y_axis_title="Scores", x_axis_title="", ascending=True, fig_size=(21, 14))
+    atop.plot_ranking(save_path="./images/a_topsis_PAD_20_extended.png", alg_names=alg_names, show=True, font_size=25, title="", y_axis_title="Scores", x_axis_title="", ascending=True, fig_size=(21, 14))
 

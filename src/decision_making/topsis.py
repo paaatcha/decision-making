@@ -214,43 +214,74 @@ class TOPSIS:
         if verbose:
             print (self.clos_coefficient)
 
-    def plot_ranking(self, alt_names=None, save_path=None, show=True):
+    def plot_ranking(self, alt_names=None, save_path=None, show=True, font_size=16,
+                 title="A-TOPSIS Test", y_axis_title="Scores", x_axis_title="Methods",
+                 ascending=True, fig_size=(6, 4)):
         """
-        This method plots the ranking, according to the closeness coefficient, in a bar plot.
+        Plots a bar chart representing the ranking based on the closeness coefficient.
 
-        Parameters:
-        -----------
-        alt_names: (list), optional
-        This is a list of names for each alternative within the decision matrix. If you're using a DataFrame, you have
-        already defined when you set the alt_col_name. So, you may let it as None. However, if you're using a matrix
-        list or a numpy array, you may pass the alternatives name here. If you let it as None, there will be a default
-        alternatives name in the plot (ex: A1, A2, etc). Default is None
+        Parameters
+        ----------
+        alt_names : list, optional
+            Names for each alternative. If None and using a DataFrame, the names from `self.alternatives` are used.
+            Otherwise, defaults to ["A1", "A2", ...].
 
-        save_path: (str), optional
-        It's the full path (including the figure name and extension) to save the plot. If you let it None, the plot
-        won't be saved. Default is None.
+        save_path : str, optional
+            Full path (including filename and extension) to save the plot. If None, the plot is not saved.
 
-        show: (boolean), optional
-        Set is as True if you want to show the plot on the screen. Default is False.
+        show : bool, optional
+            If True, displays the plot.
+
+        font_size : int, optional
+            Base font size for labels and ticks.
+
+        title : str, optional
+            Title of the plot.
+
+        y_axis_title : str, optional
+            Label for the Y-axis.
+
+        x_axis_title : str, optional
+            Label for the X-axis.
+
+        ascending : bool, optional
+            If True, sorts the alternatives by score in ascending order. Default is False (descending).
         """
 
         sns.set_style("whitegrid")
-        if self.alternatives is not None:
-            alt_names = self.alternatives
-        if alt_names is not None:
-            a = sns.barplot(alt_names, self.clos_coefficient, palette="BuGn_d")
-        else:
-            temp = [f"A{n}" for n in range(1, len(self.clos_coefficient)+1, 1)]
-            a = sns.barplot(temp, self.clos_coefficient, palette="BuGn_d")
-        a.set_ylabel("Closeness Coefficient")
-        a.set_xlabel('Alternatives')
-        fig = a.get_figure()
 
+        # Determine alternative names
+        if alt_names is None:
+            if hasattr(self, 'alternatives') and self.alternatives is not None:
+                alt_names = self.alternatives
+            else:
+                alt_names = [f"A{i+1}" for i in range(len(self.clos_coefficient))]
+
+        # Sort based on closeness coefficient
+        sorted_data = sorted(zip(alt_names, self.clos_coefficient), key=lambda x: x[1], reverse=not ascending)
+        sorted_names, sorted_scores = zip(*sorted_data)
+
+        # Criar figura com tamanho específico
+        fig, ax = plt.subplots(figsize=fig_size)
+
+        # Plot
+        sns.barplot(x=list(sorted_names), y=list(sorted_scores), palette="Blues", ax=ax)
+        ax.set_title(title, fontsize=font_size)
+        ax.set_ylabel(y_axis_title, fontsize=font_size)
+        ax.set_xlabel(x_axis_title, fontsize=font_size)
+        ax.tick_params(labelsize=font_size)
+        # plt.xticks(rotation=30, ha='right')
+
+        
         if show:
             plt.show()
+            # Save or show
+            if save_path:
+                fig.savefig(save_path, dpi=400, bbox_inches='tight')
+        else:
+            plt.close(fig)
 
-        if save_path is not None:
-            fig.savefig(save_path)
+        return fig
 
 ########################################################################################################################
 # Static methods
