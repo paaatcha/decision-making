@@ -35,7 +35,7 @@ refer to their paper linked in the [references section](#references).
 
 # Running an automatic A-TOPSIS test
 
-Now, you can export your benchmarck's results from `deep`
+Now, you can export your benchmarck's results from `deep-hub-pipelines`
 
 Add your aggregated results inside the folder 'dataset', change the configuration of the a-topsis in the script 'scripts/atopsis_from_file.py' and then run the command: `python3 scripts/atopsis_from_file.py`
 
