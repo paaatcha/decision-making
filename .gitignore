@@ -156,4 +156,4 @@ dataset/arquivo_de_teste_pad-25.csv
 dataset/agg_metablockse_jbhi_pad-25.csv
 a_topsis.png
 images/*
-dataset/agg_residual-block-pad-ufes-20.csv
+dataset/*
