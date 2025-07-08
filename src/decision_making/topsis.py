@@ -241,7 +241,7 @@ class TOPSIS:
             a = sns.barplot(alt_names, self.clos_coefficient, palette="BuGn_d")
         else:
             temp = [f"A{n}" for n in range(1, len(self.clos_coefficient)+1, 1)]
-            a = sns.barplot(temp, self.clos_coefficient, palette="BuGn_d")
+            a = sns.barplot(x=temp, y=self.clos_coefficient, palette="BuGn_d")
         a.set_ylabel("Closeness Coefficient")
         a.set_xlabel('Alternatives')
         fig = a.get_figure()
