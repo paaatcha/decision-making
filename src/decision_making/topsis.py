@@ -238,10 +238,10 @@ class TOPSIS:
         if self.alternatives is not None:
             alt_names = self.alternatives
         if alt_names is not None:
-            a = sns.barplot(alt_names, self.clos_coefficient, palette="BuGn_d")
+            a = sns.barplot(x=alt_names, y=self.clos_coefficient, hue=self.clos_coefficient, palette="BuGn_d", legend=False)
         else:
             temp = [f"A{n}" for n in range(1, len(self.clos_coefficient)+1, 1)]
-            a = sns.barplot(x=temp, y=self.clos_coefficient, palette="BuGn_d")
+            a = sns.barplot(x=temp, y=self.clos_coefficient, hue=self.clos_coefficient, palette="BuGn_d", legend=False)
         a.set_ylabel("Closeness Coefficient")
         a.set_xlabel('Alternatives')
         fig = a.get_figure()
